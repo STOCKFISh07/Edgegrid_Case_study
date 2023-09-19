@@ -3,31 +3,27 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-
 data_folder2 = 'C:\\Users\\integral computer\\Downloads\\case_study\\case_study\\hhblock_dataset\\hhblock_dataset'  # Replace with the actual folder path
 
-
 merged_df2 = pd.DataFrame()
-
 
 for filename2 in os.listdir(data_folder2):
     if filename2.startswith('block_'):
         filepath2 = os.path.join(data_folder2, filename2)
         df = pd.read_csv(filepath2)
-
-
         merged_df2 = pd.concat([merged_df2, df])
 
+half_hour_columns = merged_df2.columns[2:]
 
-if any(col.startswith('hh_') for col in merged_df2.columns):
+half_hour_periods = [int(col.split('_')[1]) for col in half_hour_columns]
 
-    max_consumption_times = merged_df2.iloc[:, 2:].idxmax(axis=1)
-    peak_hours = max_consumption_times.str.replace('hh_', '').astype(float)
 
-    sns.histplot(peak_hours, bins=48, kde=True)
-    plt.xlabel('Half-Hour of the Day')
-    plt.ylabel('Units Energy consumed')
-    plt.title('Peak Consumption Hours Distribution')
-    plt.show()
-else:
-    print("No 'hh_' columns found in the merged DataFrame.")
+median_consumption = merged_df2[half_hour_columns].median()
+
+plt.figure(figsize=(12, 6))
+plt.bar(half_hour_periods, median_consumption)
+plt.xlabel('Half-Hour of the Day')
+plt.ylabel('Median Energy Consumption')
+plt.title('Median Energy Consumption for Each Half-Hour Period')
+plt.xticks(half_hour_periods)
+plt.show()
