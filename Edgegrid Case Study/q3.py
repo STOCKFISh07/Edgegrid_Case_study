@@ -4,7 +4,7 @@ import seaborn as sns
 import os
 from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
-
+from statsmodels.tsa.stattools import adfuller
 
 data_folder2 = 'C:\\Users\\integral computer\\Downloads\\case_study\\case_study\\hhblock_dataset\\hhblock_dataset'  # Replace with the actual folder path
 
@@ -42,7 +42,7 @@ if 'hh_0' in merged_df2.columns:
     train, test = daily_energy[:train_size], daily_energy[train_size:]
 
 
-    model = ARIMA(train['hh_0'], order=(5, 4, 2))
+    model = ARIMA(train['hh_0'], order=(5, 0, 2))
     model_fit = model.fit()
 
     # Make predictions
@@ -51,6 +51,8 @@ if 'hh_0' in merged_df2.columns:
     # Calculate Mean Squared Error
     mse = mean_squared_error(test, forecast)
     print(f'Mean Squared Error: {mse}')
+
+
 
     # Plot actual vs. forecasted energy consumption
     plt.figure(figsize=(12, 6))
